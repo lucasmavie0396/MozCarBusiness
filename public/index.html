@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1730" />
+  <title>MozCarBusiness - Compre e Venda Carros em Moçambique</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="container">
+      <a href="/" class="brand">
+        <span class="logo">M</span>
+        <span>MozCarBusiness<small>MOÇAMBIQUE</small></span>
+      </a>
+      <nav class="nav">
+        <span id="navGuest">
+          <a href="#vender">Vender</a>
+          <a href="/admin" title="Painel do administrador">Admin</a>
+          <a href="/entrar" class="btn-primary">+ Publicar Carro</a>
+        </span>
+        <span id="navSeller" style="display:none">
+          <a href="/minha-conta">Minha Conta</a>
+          <span class="seller-pill" id="sellerName"></span>
+          <a href="#" class="btn-primary" id="logoutBtn" onclick="sellerLogout(event)">👋 Sair</a>
+        </span>
+      </nav>
+    </div>
+  </header>
+
+  <section class="slider" id="sliderSection" style="display:none" aria-label="Publicidade em destaque">
+    <div class="slides" id="slideTrack"></div>
+    <button class="sl-arrow prev" aria-label="Publicidade anterior" onclick="slideNav(-1)">‹</button>
+    <button class="sl-arrow next" aria-label="Próxima publicidade" onclick="slideNav(1)">›</button>
+    <div class="sl-dots" id="slideDots"></div>
+  </section>
+
+  <section class="hero" id="fallbackHero">
+    <div class="container">
+      <h1>Compre e <span>Venda</span> Carros em Moçambique</h1>
+      <p>Anuncie o seu carro em minutos mediante uma taxa única. O anúncio só é publicado após aprovação da nossa administração.</p>
+      <div class="hero-actions">
+        <a href="/registar" class="btn btn-primary">Vender o meu carro</a>
+        <a href="#listagem" class="btn btn-outline" style="border-color:rgba(255,255,255,.35);color:#fff">Ver carros à venda</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div id="listagem">
+    <form class="searchbar" id="searchForm" onsubmit="return applyFilters()">
+      <span class="icon">🔍</span>
+      <input type="search" id="q" placeholder="Pesquisar por marca, modelo, cidade..." aria-label="Pesquisar" />
+      <button type="submit" class="btn btn-primary">Pesquisar</button>
+    </form>
+
+    <div class="section-title" style="margin-top:8px">
+        <span>🚗 Carros à venda</span>
+        <span class="line"></span>
+      </div>
+
+      <div class="filters">
+      <button id="mineToggle" class="tab" style="display:none" onclick="showMine(event)">🔑 Os meus publicados</button>
+      <select id="fBrand"><option value="">Marca (todas)</option></select>
+      <input type="number" id="fPriceMin" min="0" step="1" placeholder="Preço mín. (MT)" aria-label="Preço mínimo" />
+      <input type="number" id="fPriceMax" min="0" step="1" placeholder="Preço máx. (MT)" aria-label="Preço máximo" />
+      <select id="fFuel">
+        <option value="">Combustível (todos)</option>
+        <option>Gasolina</option>
+        <option>Diesel</option>
+        <option>Híbrido</option>
+        <option>Elétrico</option>
+      </select>
+      <select id="fTrans">
+        <option value="">Transmissão (todas)</option>
+        <option>Manual</option>
+        <option>Automática</option>
+        <option>Semi-automática</option>
+      </select>
+      <select id="fSort">
+        <option value="newest">Mais recentes</option>
+        <option value="price_asc">Preço: menor → maior</option>
+        <option value="price_desc">Preço: maior → menor</option>
+        <option value="year_desc">Ano: mais novo</option>
+      </select>
+      <span class="result-meta" id="countMeta"></span>
+    </div>
+
+    <main>
+      <div class="grid" id="grid"></div>
+      <div class="empty" id="emptyState" style="display:none">
+        <div class="big">🛻</div>
+        <h3>Nenhum carro encontrado</h3>
+        <p>Experimente mudar os filtros ou <a href="/registar" style="color:var(--red);font-weight:700">registe-se como vendedor</a>.</p>
+      </div>
+    </main>
+    </div>
+  </div>
+
+  <section id="vender" class="page" style="padding-top:10px">
+    <div class="container">
+      <div class="form-card" style="max-width:none;background:linear-gradient(120deg,var(--navy),var(--navy-2));color:#fff;border:none">
+        <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+          <div style="flex:1;min-width:250px">
+            <h2 style="font-size:1.7rem">Quer vender o seu carro?</h2>
+            <p style="color:#c3cde6;margin-top:8px">
+              Registe-se como vendedor (dados legais, documento e selfie), escolha um plano trimestral e
+              publique carros sem taxas por anúncio. Planos a partir de
+              <strong style="color:#ff9e8a;font-size:1.1rem">500 MT/trimestre</strong>.
+            </p>
+            <a href="/registar" class="btn btn-primary" style="margin-top:18px">Registar como vendedor →</a>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <span class="pay-method" style="border-color:rgba(255,255,255,.25);color:#fff">📱 M-Pesa<div class="num">84 000 0000</div></span>
+            <span class="pay-method" style="border-color:rgba(255,255,255,.25);color:#fff">📲 E-Mola<div class="num">82 000 0000</div></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h3 id="modalTitle">Detalhes do carro</h3>
+        <button class="modal-close" onclick="closeModal()" aria-label="Fechar">✕</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="renewBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" style="max-width:540px">
+      <div class="modal-head">
+        <h3>🔔 A sua subscrição terminou</h3>
+        <button class="modal-close" onclick="closeRenew()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="detail-body">
+        <p style="color:var(--muted);font-size:.92rem">O trimestre da sua subscrição terminou e as <strong>suas publicações ficaram ocultas da loja</strong>. Renove o seu pacote (3 meses) para voltarem a ser vistas pelos compradores.</p>
+        <div class="plans" id="renewPlans"></div>
+        <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="renewBtn" onclick="startRenew(this)">🔁 Renovar agora →</button>
+          <button class="btn btn-ghost" onclick="closeRenew()">Mais tarde</button>
+        </div>
+        <p id="renewNote" style="color:var(--muted);font-size:.85rem;margin-top:10px"></p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div>© 2026 <strong style="color:#fff">MozCarBusiness</strong> · Compra e venda de carros em Moçambique</div>
+      <div>
+        <a href="/entrar">Publicar carro</a> ·
+        <a href="/admin">Administração</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>

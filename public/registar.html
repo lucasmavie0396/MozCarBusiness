@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registar Vendedor - MozCarBusiness</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="container">
+      <a href="/" class="brand">
+        <span class="logo">M</span>
+        <span>MozCarBusiness<small>MOÇAMBIQUE</small></span>
+      </a>
+      <nav class="nav">
+        <a href="/">Ver anúncios</a>
+        <a href="/entrar">Já tenho conta</a>
+        <a href="/admin" class="btn-primary">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page">
+    <div class="container" style="max-width:900px">
+      <div class="page-head">
+        <h1>Registo de Vendedor 🚗</h1>
+        <p>Para publicar carros precisa de se registar com os seus dados legais, enviar o seu documento (frente e verso), uma selfie tirada na hora, partilhar a sua localização e escolher um plano de subscrição trimestral.</p>
+      </div>
+
+      <div class="alert alert-error" id="alertBox"></div>
+
+      <form class="form-card" id="regForm" novalidate>
+        <h3 style="margin-bottom:14px">1 · Dados pessoais</h3>
+        <div class="form-row">
+          <div class="field">
+            <label>Nome completo *</label>
+            <input name="full_name" placeholder="Ex.: Ana Maria Cossa" required />
+          </div>
+          <div class="field">
+            <label>Data de nascimento</label>
+            <input name="birth_date" type="date" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label>Tipo de documento *</label>
+            <select name="id_type" required>
+              <option value="">Selecione...</option>
+              <option>BI (Bilhete de Identidade)</option>
+              <option>Passaporte</option>
+              <option>Carta de Condução</option>
+              <option>DIRE</option>
+              <option>Outro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Nº do documento *</label>
+            <input name="id_number" placeholder="Ex.: 123456789" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label>Telefone *</label>
+            <input name="phone" placeholder="Ex.: 84 123 4567" required />
+          </div>
+          <div class="field">
+            <label>E-mail * <em style="color:var(--muted);font-style:normal;font-weight:400">(será o seu nome de utilizador para entrar)</em></label>
+            <input name="email" type="email" placeholder="exemplo@email.com" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label>Cidade *</label>
+            <input name="city" placeholder="Ex.: Maputo" required />
+          </div>
+          <div class="field">
+            <label>Bairro / Endereço</label>
+            <input name="address" placeholder="Bairro, rua, n.º..." />
+          </div>
+        </div>
+        <div class="field full">
+          <label>📍 Partilhar a minha localização (obrigatório)</label>
+          <button type="button" class="btn btn-outline" id="locBtn">📍 Partilhar localização agora</button>
+          <div id="locResult" style="display:none;margin-top:10px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:.9rem">
+            <strong style="color:var(--green)">✔ Localização partilhada</strong>
+            <div id="locCoords" style="color:var(--muted);margin-top:4px"></div>
+          </div>
+        </div>
+
+        <h3 style="margin:26px 0 14px">2 · Documentos de identificação</h3>
+        <div class="form-row">
+          <div class="field">
+            <label>Foto do documento — FRENTE *</label>
+            <div class="uploader"><input type="file" name="id_front" id="idFront" accept="image/*" required /><div class="up-icon">🪪</div><p><strong>Clique para selecionar</strong></p></div>
+            <div class="mini-preview" id="prevFront"></div>
+          </div>
+          <div class="field">
+            <label>Foto do documento — VERSO *</label>
+            <div class="uploader"><input type="file" name="id_back" id="idBack" accept="image/*" required /><div class="up-icon">🪪</div><p><strong>Clique para selecionar</strong></p></div>
+            <div class="mini-preview" id="prevBack"></div>
+          </div>
+        </div>
+        <div class="field full">
+          <label>🤳 Selfie tirada na hora (foto do rosto) *</label>
+          <div class="uploader">
+            <input type="file" name="selfie" id="selfie" accept="image/*" capture="user" required />
+            <div class="up-icon">📸</div>
+            <p><strong>Clique para tirar / selecionar</strong> — use a câmara frontal</p>
+          </div>
+          <div class="mini-preview" id="prevSelfie"></div>
+        </div>
+
+        <h3 style="margin:26px 0 8px">3 · Plano de subscrição trimestral</h3>
+        <p style="color:var(--muted);font-size:.92rem;margin-bottom:14px">Escolha o plano. Paga por trimestre (3 meses) e publica sem taxas por anúncio. O administrador aprova o seu registo após confirmar o pagamento — o trimestre começa no dia da aprovação.</p>
+        <div class="plans" id="planList"></div>
+
+        <h3 style="margin:26px 0 14px">4 · Palavra-passe</h3>
+        <div class="form-row">
+          <div class="field">
+            <label>Palavra-passe *</label>
+            <input name="password" type="password" minlength="6" placeholder="Mínimo 6 caracteres" required />
+          </div>
+          <div class="field">
+            <label>Confirmar palavra-passe *</label>
+            <input name="password2" type="password" placeholder="Repita a palavra-passe" required />
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" style="width:100%;padding:15px;margin-top:14px">
+          Submeter registo e gerar referência de pagamento →
+        </button>
+        <p style="text-align:center;color:var(--muted);font-size:.88rem;margin-top:12px">
+          Já tem conta? <a href="/entrar" style="color:var(--red);font-weight:700">Inicie sessão</a>
+        </p>
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div>© 2026 <strong style="color:#fff">MozCarBusiness</strong></div>
+      <div><a href="/">Voltar à loja</a></div>
+    </div>
+  </footer>
+
+  <script src="/static/js/registar.js"></script>
+</body>
+</html>

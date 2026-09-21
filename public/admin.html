@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administração - MozCarBusiness</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>" />
+</head>
+<body>
+
+  <!-- Dashboard -->
+  <div class="admin-shell" id="dashView">
+    <div class="admin-nav">
+      <div class="container">
+        <a href="/" class="brand" style="color:#fff">
+          <span class="logo">M</span>
+          <span>MozCarBusiness<small>ADMINISTRAÇÃO</small></span>
+        </a>
+        <span class="who" id="whoAmI"></span>
+        <span class="spacer"></span>
+        <a href="/" style="color:#dfe6f5;font-size:.9rem;text-decoration:none;font-weight:600">Ver loja ↗</a>
+        <button class="btn btn-outline btn-sm" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.35)" onclick="logout()">Sair</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="sec-tabs" id="secTabs">
+        <button class="tab active" data-sec="cars">🚗 Anúncios de carros</button>
+        <button class="tab" data-sec="sellers">👤 Vendedores</button>
+        <button class="tab" data-sec="ads">📣 Publicidade</button>
+        <button class="tab" data-sec="plans">💳 Pacotes</button>
+        <button class="tab" data-sec="account">⚙ Conta</button>
+      </div>
+
+      <div id="carsSection">
+        <div class="stat-row" id="statsRow"></div>
+        <div class="tabs" id="tabs">
+          <button class="tab active" data-status="review">🕐 Em revisão</button>
+          <button class="tab" data-status="approved">✔ Publicados</button>
+          <button class="tab" data-status="rejected">✖ Recusados</button>
+          <button class="tab" data-status="all">Todos</button>
+        </div>
+        <div class="admin-list" id="list"></div>
+        <div class="empty" id="adminEmpty" style="display:none">
+          <div class="big">🗂️</div>
+          <h3>Sem anúncios</h3>
+          <p>Nada para mostrar nesta categoria.</p>
+        </div>
+      </div>
+
+      <div id="sellersSection" style="display:none">
+        <div class="tabs" id="sellerTabs">
+          <button class="tab active" data-sstatus="review">🕐 Em revisão (pago)</button>
+          <button class="tab" data-sstatus="unpaid">💤 Sem pagamento</button>
+          <button class="tab" data-sstatus="approved">✔ Aprovados</button>
+          <button class="tab" data-sstatus="rejected">✖ Recusados</button>
+          <button class="tab" data-sstatus="all">Todos</button>
+        </div>
+        <div class="admin-list" id="sellersList"></div>
+        <div class="empty" id="sellersEmpty" style="display:none">
+          <div class="big">👤</div>
+          <h3>Sem vendedores</h3>
+          <p>Nenhum registo nesta categoria.</p>
+        </div>
+      </div>
+
+      <div id="adsSection" style="display:none">
+        <div class="ad-form form-card">
+          <div class="page-head" style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+            <div>
+              <h1 style="font-size:1.35rem" id="adFormTitle">➕ Nova publicidade</h1>
+              <p>As publicidades aparecem no topo da loja em slideshow (7 segundos cada). Recomendado: imagem 1600×600.</p>
+            </div>
+          </div>
+          <div class="alert alert-error" id="adAlert"></div>
+          <div class="form-row">
+            <div class="field">
+              <label>Título *</label>
+              <input type="text" id="adTitle" placeholder="Ex.: Carros premium em promoção" />
+            </div>
+            <div class="field">
+              <label>Link de destino</label>
+              <input type="text" id="adLink" placeholder="Ex.: https://exemplo.com/promocao (opcional)" />
+            </div>
+          </div>
+          <div class="field">
+            <label>Imagem *</label>
+            <div class="uploader ad-uploader" id="adUploader">
+              <input type="file" id="adImage" accept="image/*" />
+              <div class="up-icon">🖼️</div>
+              <p><strong>Clique para selecionar</strong> — JPG, PNG, WEBP ou GIF · máx. 5 MB</p>
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="adActive" checked />
+            <span>Ativa (visível na loja)</span>
+          </label>
+          <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+            <button class="btn btn-primary" id="adSubmit" onclick="saveAd()">Salvar publicidade</button>
+            <button class="btn btn-ghost" id="adCancel" style="display:none" onclick="resetAdForm()">Cancelar edição</button>
+          </div>
+        </div>
+
+        <div class="page-head" style="margin:26px 0 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <h1 style="font-size:1.25rem">📋 Publicidades existentes</h1>
+          <span class="badge pending" id="adCount"></span>
+        </div>
+        <div class="admin-list" id="adsList"></div>
+        <div class="empty" id="adsEmpty" style="display:none">
+          <div class="big">📣</div>
+          <h3>Ainda não há publicidades</h3>
+          <p>Crie a primeira acima — ela aparecerá no slideshow da loja.</p>
+        </div>
+      </div>
+
+      <div id="plansSection" style="display:none">
+        <div class="ad-form form-card">
+          <div class="page-head" style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+            <div>
+              <h1 style="font-size:1.35rem" id="planFormTitle">➕ Novo pacote</h1>
+              <p>Os pacotes definem a taxa trimestral e o número de publicações. Os vendedores escolhem-nos no registo, na renovação e no upgrade.</p>
+            </div>
+          </div>
+          <div class="alert alert-error" id="planAlert"></div>
+          <div class="form-row">
+            <div class="field">
+              <label>Código *</label>
+              <input type="text" id="planCode" placeholder="ex.: gold" style="text-transform:lowercase" />
+              <small style="color:var(--muted)">Sem espaços (letras, números, _ e -). Não se altera depois de criado.</small>
+            </div>
+            <div class="field">
+              <label>Etiqueta (valor) *</label>
+              <input type="text" id="planLabel" placeholder="ex.: 3 000 MT" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Taxa trimestral (MT) *</label>
+              <input type="number" id="planFee" min="1" step="1" placeholder="ex.: 3000" />
+            </div>
+            <div class="field">
+              <label>Publicações por trimestre *</label>
+              <input type="number" id="planPosts" min="1" step="1" placeholder="ex.: 15" />
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="planActive" checked />
+            <span>Activo (visível para os vendedores)</span>
+          </label>
+          <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+            <button class="btn btn-primary" id="planSubmit" onclick="savePlan()">Criar pacote</button>
+            <button class="btn btn-ghost" id="planCancel" style="display:none" onclick="resetPlanForm()">Cancelar edição</button>
+          </div>
+          <p style="color:var(--muted);font-size:.82rem;margin-top:12px">Nota: alterar um pacote não afecta os vendedores já subscritos — eles mantêm a taxa e o limite que tinham. As alterações valem para novas subscrições, renovações e upgrades.</p>
+        </div>
+
+        <div class="page-head" style="margin:26px 0 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <h1 style="font-size:1.25rem">💳 Pacotes existentes</h1>
+          <span class="badge pending" id="plansCount"></span>
+        </div>
+        <div class="admin-list" id="plansList"></div>
+        <div class="empty" id="plansEmpty" style="display:none">
+          <div class="big">💳</div>
+          <h3>Ainda não há pacotes</h3>
+          <p>Crie o primeiro pacote para os vendedores poderem subscrever.</p>
+        </div>
+      </div>
+
+      <div id="accountSection" style="display:none">
+        <div class="form-card" style="max-width:520px">
+          <h1 style="font-size:1.35rem">⚙ Conta de administrador</h1>
+          <p class="section-sub" style="margin-bottom:16px">E-mail e palavra-passe usados na tela única de acesso para abrir o painel.</p>
+          <div class="alert alert-error" id="accAlert"></div>
+          <div class="field">
+            <label>Utilizador (apenas informativo)</label>
+            <input type="text" id="accUsername" disabled />
+          </div>
+          <div class="field">
+            <label>E-mail de acesso *</label>
+            <input type="email" id="accEmail" placeholder="admin@mozcarbusiness.co.mz" required />
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin:20px 0 6px">
+            <span style="font-weight:700">🔑 Alterar palavra-passe</span>
+            <span style="flex:1;height:1px;background:var(--line)"></span>
+            <span class="badge pending" style="font-weight:600">opcional</span>
+          </div>
+          <div class="field">
+            <label>Palavra-passe atual</label>
+            <input type="password" id="accCurPass" autocomplete="current-password" placeholder="Necessária para alterar a palavra-passe" />
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Nova palavra-passe</label>
+              <input type="password" id="accNewPass" minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres" />
+            </div>
+            <div class="field">
+              <label>Repetir nova palavra-passe</label>
+              <input type="password" id="accNewPass2" autocomplete="new-password" />
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+            <button class="btn btn-primary" id="accSaveBtn" onclick="saveAccount(this)">💾 Guardar alterações</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal aprovacao/recusa -->
+  <div class="modal-backdrop" id="actionBackdrop">
+    <div class="modal" style="max-width:560px">
+      <div class="modal-head">
+        <h3 id="actionTitle">Decisão</h3>
+        <button class="modal-close" onclick="closeAction()">✕</button>
+      </div>
+      <div class="detail-body">
+        <div id="actionBody"></div>
+        <div class="field" id="reasonField" style="display:none">
+          <label>Motivo da recusa</label>
+          <textarea id="reasonText" placeholder="Indique o motivo (visível para o vendedor)..."></textarea>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn btn-green" id="confirmBtn">Confirmar</button>
+          <button class="btn btn-ghost" onclick="closeAction()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minha Conta - MozCarBusiness</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="container">
+      <a href="/" class="brand">
+        <span class="logo">M</span>
+        <span>MozCarBusiness<small>MOÇAMBIQUE</small></span>
+      </a>
+      <nav class="nav">
+        <a href="/">Ver anúncios</a>
+        <a href="/sell" class="btn-primary">+ Publicar Carro</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page">
+    <div class="container" style="max-width:960px">
+      <div id="notLogged" style="display:none;text-align:center;padding:50px 20px" class="empty">
+        <div class="big">🔐</div>
+        <h3>Inicie sessão</h3>
+        <p>Para publicar e gerir os seus carros, entre na sua conta de vendedor.</p>
+        <a href="/entrar" class="btn btn-primary" style="margin-top:14px">Entrar como vendedor</a>
+        <p style="margin-top:10px;color:var(--muted)">Ainda não tem conta? <a href="/registar" style="color:var(--red);font-weight:700">Registe-se</a></p>
+      </div>
+
+      <div id="account" style="display:none">
+        <div class="account-head">
+          <div>
+            <h1>👤 <span id="acctName"></span></h1>
+            <p class="acct-sub" id="acctPhone"></p>
+          </div>
+          <div style="display:flex;gap:8px">
+            <a href="/sell" class="btn btn-primary">+ Publicar Carro</a>
+            <button class="btn btn-outline" onclick="logout()">Sair</button>
+          </div>
+        </div>
+
+        <div class="alert alert-error" id="statusBox" style="display:none"></div>
+
+        <div class="plan-box">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div>
+              <div class="plan-lbl">A minha subscrição · trimestre</div>
+              <div class="plan-name" id="planLabel"></div>
+            </div>
+            <div style="font-size:1.2rem;text-align:right" id="planBadge"></div>
+          </div>
+
+          <div class="plan-meter" style="margin-top:16px">
+            <div class="meter-track"><div class="meter-fill" id="meterFill"></div></div>
+            <div class="meter-text" id="meterText"></div>
+          </div>
+
+          <div class="spec-grid" style="margin:16px 0 0;grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
+            <div class="spec-box"><div class="k">Publicações feitas</div><div class="v" id="subUsed">0</div></div>
+            <div class="spec-box"><div class="k">Publicações restantes</div><div class="v" id="subLeft">0</div></div>
+            <div class="spec-box"><div class="k">Trimestre actual</div><div class="v" id="subDate" style="font-weight:600;font-size:.85rem"></div></div>
+          </div>
+
+          <div id="subLine" style="color:var(--muted);font-size:.9rem;margin-top:12px"></div>
+
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-primary" id="subUpgradeBtn" onclick="openUpgradeModal()" style="display:none">▲ Migrar para pacote superior</button>
+          </div>
+        </div>
+
+        <div class="alert" id="renewBanner" style="display:none;margin-top:14px;background:#fff8ec;border-color:#ffe0b2;color:#9a6b1a">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:220px">🔔 <strong>A sua subscrição trimestral terminou.</strong> As suas publicações ficaram ocultas da loja. Renove para continuar a ser visto.</div>
+            <button class="btn btn-primary" onclick="openRenewModal()">🔁 Renovar agora</button>
+          </div>
+        </div>
+
+        <div class="alert alert-success show" id="renewPaidBanner" style="display:none;margin-top:14px">
+          💳 <strong>Renovação em análise.</strong> O pagamento já foi recebido. Assim que o administrador confirmar, as suas publicações voltam a ficar visíveis.
+        </div>
+
+        <h3 style="margin:28px 0 14px">🔐 Segurança</h3>
+        <div class="form-card" style="margin-top:0;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:18px 20px">
+          <div>
+            <strong>Palavra-passe</strong>
+            <p style="color:var(--muted);font-size:.9rem;margin:4px 0 0">Troque a palavra-passe usada para entrar na sua conta.</p>
+          </div>
+          <button class="btn btn-outline" onclick="openPwdModal()">🔑 Alterar palavra-passe</button>
+        </div>
+
+        <h3 style="margin:28px 0 14px">📋 Os meus anúncios</h3>
+        <div id="postsList"></div>
+        <div class="empty" id="noPosts" style="display:none;padding:40px 20px">
+          <div class="big">🚗</div>
+          <h3>Ainda não publicou carros</h3>
+          <p>Publique o seu primeiro carro agora mesmo.</p>
+          <a href="/sell" class="btn btn-primary btn-sm" style="margin-top:10px">Publicar carro</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div>© 2026 <strong style="color:#fff">MozCarBusiness</strong></div>
+      <div><a href="/">Voltar à loja</a></div>
+    </div>
+  </footer>
+
+  <div class="modal-backdrop" id="renewBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" style="max-width:540px">
+      <div class="modal-head">
+        <h3>🔁 Renovar subscrição (3 meses)</h3>
+        <button class="modal-close" onclick="closeRenewModal()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="detail-body">
+        <p style="color:var(--muted);font-size:.92rem" id="renewIntro">Escolha o plano para o novo trimestre. Após escolher, gera-se uma referência de pagamento.</p>
+        <div class="plans" id="renewPlans"></div>
+        <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="renewBtn" onclick="startRenew(this)">Gerar referência de renovação →</button>
+          <button class="btn btn-ghost" onclick="closeRenewModal()">Cancelar</button>
+        </div>
+        <p id="renewNote" style="color:var(--muted);font-size:.85rem;margin-top:10px"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="upBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" style="max-width:540px">
+      <div class="modal-head">
+        <h3>▲ Migrar para pacote superior (este trimestre)</h3>
+        <button class="modal-close" onclick="closeUpgradeModal()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="detail-body">
+        <p style="color:var(--muted);font-size:.92rem" id="upIntro">Escolha o pacote para o qual quer migrar. Paga apenas a diferença do valor e a subscrição trimestral continua a mesma.</p>
+        <p style="font-size:.9rem;margin-bottom:10px">Plano atual: <strong id="upCurrent"></strong> · <span id="upUsed"></span> publicações feitas</p>
+        <div class="plans" id="upPlans"></div>
+        <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="upBtn" onclick="startUpgrade(this)">Gerar referência de upgrade →</button>
+          <button class="btn btn-ghost" onclick="closeUpgradeModal()">Cancelar</button>
+        </div>
+        <p id="upNote" style="color:var(--muted);font-size:.85rem;margin-top:10px"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="pwdBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" style="max-width:460px">
+      <div class="modal-head">
+        <h3>🔑 Alterar palavra-passe</h3>
+        <button class="modal-close" onclick="closePwdModal()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="detail-body">
+        <div class="alert alert-success show" id="pwdBox" style="display:none"></div>
+        <form id="pwdForm" novalidate>
+          <div class="field full">
+            <label>Palavra-passe atual <small>obrigatória</small></label>
+            <input type="password" id="curPass" autocomplete="current-password" />
+          </div>
+          <div class="field full">
+            <label>Nova palavra-passe <small>mínimo 6 caracteres</small></label>
+            <input type="password" id="newPass" autocomplete="new-password" />
+          </div>
+          <div class="field full">
+            <label>Confirmar nova palavra-passe</label>
+            <input type="password" id="confPass" autocomplete="new-password" />
+          </div>
+          <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+            <button type="submit" class="btn btn-primary" id="pwdBtn">Guardar palavra-passe</button>
+            <button type="button" class="btn btn-ghost" onclick="closePwdModal()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/conta.js"></script>
+</body>
+</html>

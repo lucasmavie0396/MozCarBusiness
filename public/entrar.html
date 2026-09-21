@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1730" />
+  <title>Entrar - MozCarBusiness</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="container">
+      <a href="/" class="brand">
+        <span class="logo">M</span>
+        <span>MozCarBusiness<small>MOÇAMBIQUE</small></span>
+      </a>
+      <nav class="nav">
+        <a href="/">Ver anúncios</a>
+        <a href="/registar">Criar conta</a>
+        <a href="/admin" class="btn-primary">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page">
+    <div class="container" style="max-width:440px">
+      <div style="text-align:center;margin-bottom:22px">
+        <span class="logo" style="width:60px;height:60px;font-size:1.6rem;border-radius:16px;background:linear-gradient(135deg,var(--red),#ff5a3c);display:inline-grid;place-items:center;color:#fff;font-weight:900">M</span>
+        <h1 style="margin-top:12px" id="pageTitle">Entrar na plataforma</h1>
+        <p style="color:var(--muted)" id="pageSub">Vendedor: use o seu e-mail · Administrador: use o seu e-mail ou utilizador</p>
+      </div>
+      <div class="alert alert-error" id="alertBox"></div>
+      <form class="form-card" id="loginForm">
+        <div class="field">
+          <label>E-mail ou utilizador</label>
+          <input type="text" id="loginUser" autocomplete="username" placeholder="exemplo@email.com ou admin" required />
+        </div>
+        <div class="field">
+          <label>Palavra-passe</label>
+          <input type="password" id="loginPass" autocomplete="current-password" required />
+        </div>
+        <button class="btn btn-primary" style="width:100%" id="loginBtn">Iniciar sessão</button>
+        <p style="text-align:center;color:var(--muted);font-size:.88rem;margin-top:14px">
+          Quer vender carros? <a href="/registar" style="color:var(--red);font-weight:700">Registe-se como vendedor</a>
+        </p>
+      </form>
+      <form class="form-card" id="setupForm" style="display:none">
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:4px">
+          <span style="font-size:1.5rem">🔐</span>
+          <div>
+            <strong style="font-size:1.05rem">Criar conta de administrador</strong>
+            <p style="color:var(--muted);font-size:.85rem;margin:2px 0 0">Primeiro acesso — defina o e-mail e a palavra-passe do painel. Esta tela aparece apenas uma vez.</p>
+          </div>
+        </div>
+        <div class="field">
+          <label>E-mail de acesso</label>
+          <input type="email" id="setupEmail" autocomplete="username" placeholder="admin@exemplo.com" required />
+        </div>
+        <div class="field">
+          <label>Palavra-passe</label>
+          <input type="password" id="setupPass" minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres" required />
+        </div>
+        <div class="field">
+          <label>Repetir a palavra-passe</label>
+          <input type="password" id="setupPass2" autocomplete="new-password" required />
+        </div>
+        <button class="btn btn-primary" style="width:100%" id="setupBtn">Criar administrador</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div>© 2026 <strong style="color:#fff">MozCarBusiness</strong></div>
+      <div><a href="/">Voltar à loja</a></div>
+    </div>
+  </footer>
+
+  <script src="/static/js/entrar.js"></script>
+</body>
+</html>

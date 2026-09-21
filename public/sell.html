@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Publicar Carro - MozCarBusiness</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="container">
+      <a href="/" class="brand">
+        <span class="logo">M</span>
+        <span>MozCarBusiness<small>MOÇAMBIQUE</small></span>
+      </a>
+      <nav class="nav">
+        <a href="/">Ver anúncios</a>
+        <a href="/minha-conta">Minha conta</a>
+        <a href="/admin" class="btn-primary">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page">
+    <div class="container" style="max-width:860px">
+
+      <div id="gateLoggedOut" style="display:none" class="empty" style="padding:60px 20px">
+        <div class="big">🔐</div>
+        <h3>Registo obrigatório para publicar</h3>
+        <p style="max-width:520px;margin:0 auto">
+          Para vender carros precisa primeiro de se registar como vendedor (dados legais, documento frente e verso,
+          selfie tirada na hora, localização) e escolher um plano trimestral. O administrador aprova o seu registo.
+        </p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap">
+          <a href="/entrar?next=/sell" class="btn btn-primary">Já tenho conta — entrar</a>
+          <a href="/registar" class="btn btn-outline">Criar conta de vendedor</a>
+        </div>
+      </div>
+
+      <div id="gateStatus" style="display:none" class="empty" style="padding:60px 20px">
+        <div class="big" id="gateIcon">🕐</div>
+        <h3 id="gateTitle">Conta em aprovação</h3>
+        <p id="gateMsg" style="max-width:520px;margin:0 auto"></p>
+        <button class="btn btn-primary" id="gateUpBtn" style="display:none;margin-top:16px" onclick="openUpgradeModal()">▲ Migrar para pacote superior</button>
+        <a href="/minha-conta" class="btn btn-outline" style="margin-top:16px">Ver o estado da minha conta</a>
+      </div>
+
+      <div id="sellFormWrap" style="display:none">
+        <div class="page-head">
+          <h1>Publicar o seu carro 🚗</h1>
+          <p>Sem taxas por anúncio — tudo está incluído no seu plano trimestral.</p>
+          <p style="margin-top:8px"><span class="badge pending" id="planBadge"></span></p>
+        </div>
+
+        <div class="alert alert-error" id="alertBox"></div>
+
+        <form class="form-card" id="sellForm" novalidate>
+          <div class="field full">
+            <label>Fotos do carro <small>Adicione 1 a 8 fotos — a primeira será a capa</small></label>
+            <div class="uploader" id="uploader">
+              <input type="file" id="photos" accept="image/*" multiple />
+              <div class="up-icon">📸</div>
+              <p><strong>Clique para selecionar</strong> ou arraste as fotos aqui<br />JPG, PNG, WEBP ou GIF · máx. 5 MB cada</p>
+            </div>
+            <div class="preview-grid" id="previewGrid"></div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label>Marca *</label>
+              <input name="brand" list="brandOptions" placeholder="Ex.: Toyota" />
+              <datalist id="brandOptions"></datalist>
+            </div>
+            <div class="field">
+              <label>Modelo *</label>
+              <input name="model" placeholder="Ex.: Hilux" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label>Preço (MT) *</label>
+              <input name="price" type="number" min="1" placeholder="Ex.: 950000" />
+            </div>
+            <div class="field">
+              <label>Ano</label>
+              <input name="year" type="number" min="1950" max="2026" placeholder="Ex.: 2019" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label>Quilometragem (km)</label>
+              <input name="mileage" type="number" min="0" placeholder="Ex.: 85000" />
+            </div>
+            <div class="field">
+              <label>Combustível</label>
+              <select name="fuel">
+                <option value="">Selecione...</option>
+                <option>Gasolina</option><option>Diesel</option><option>Híbrido</option><option>Elétrico</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label>Transmissão</label>
+              <select name="transmission">
+                <option value="">Selecione...</option>
+                <option>Manual</option><option>Automática</option><option>Semi-automática</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Cor</label>
+              <input name="color" placeholder="Ex.: Branco" list="colorsList" />
+              <datalist id="colorsList">
+                <option>Branco</option><option>Preto</option><option>Cinza</option>
+                <option>Vermelho</option><option>Azul</option><option>Verde</option>
+                <option>Prata</option><option>Dourado</option><option>Bege</option>
+              </datalist>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label>Nº de portas</label>
+              <select name="doors">
+                <option value="">Selecione...</option>
+                <option>2</option><option>3</option><option>4</option><option>5</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Lugares</label>
+              <select name="seats">
+                <option value="">Selecione...</option>
+                <option>2</option><option>4</option><option>5</option><option>7</option><option>8</option><option>12</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label>Cidade</label>
+              <input name="city" placeholder="Ex.: Maputo" list="citiesList" />
+              <datalist id="citiesList">
+                <option>Maputo</option><option>Matola</option><option>Beira</option><option>Nampula</option>
+                <option>Quelimane</option><option>Chimoio</option><option>Pemba</option><option>Tete</option>
+                <option>Xai-Xai</option><option>Inhambane</option>
+              </datalist>
+            </div>
+            <div class="field">
+              <label>Condição</label>
+              <select name="condition">
+                <option value="">Selecione...</option>
+                <option>Novo</option><option>Seminovo</option><option>Usado</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field full">
+            <label>Descrição</label>
+            <textarea name="description" placeholder="Descreva o estado do carro, histórico, extras, motivos da venda..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" style="width:100%;padding:15px">
+            Submeter anúncio para aprovação
+          </button>
+          <p style="text-align:center;color:var(--muted);font-size:.88rem;margin-top:12px">
+            O anúncio é publicado após aprovação do administrador.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div>© 2026 <strong style="color:#fff">MozCarBusiness</strong></div>
+      <div><a href="/">Voltar à loja</a></div>
+    </div>
+  </footer>
+
+  <div class="modal-backdrop" id="upBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" style="max-width:540px">
+      <div class="modal-head">
+        <h3>▲ Atualizar o meu pacote (este trimestre)</h3>
+        <button class="modal-close" onclick="closeUpgradeModal()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="detail-body">
+        <p style="color:var(--muted);font-size:.92rem" id="upIntro">O seu pacote atingiu o limite de publicações. Escolha o pacote para o qual quer migrar — paga apenas a diferença do valor.</p>
+        <p style="font-size:.9rem;margin-bottom:10px">Plano atual: <strong id="upCurrent"></strong> · <span id="upUsed"></span></p>
+        <div class="plans" id="upPlans"></div>
+        <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="upBtn" onclick="startUpgrade(this)">Gerar referência de upgrade →</button>
+          <button class="btn btn-ghost" onclick="closeUpgradeModal()">Mais tarde</button>
+        </div>
+        <p id="upNote" style="color:var(--muted);font-size:.85rem;margin-top:10px"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/sell.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pagamento da Subscrição - MozCarBusiness</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="container">
+      <a href="/" class="brand">
+        <span class="logo">M</span>
+        <span>MozCarBusiness<small>MOÇAMBIQUE</small></span>
+      </a>
+      <nav class="nav">
+        <a href="/">Ver anúncios</a>
+        <a href="/entrar" class="btn-primary">Entrar como vendedor</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page">
+    <div class="container">
+      <div class="page-head">
+        <h1 id="payTitle">Concluir o pagamento da subscrição 💳</h1>
+        <p id="paySub">O seu registo já foi submetido. Pague a subscrição trimestral para que o administrador aprove a sua conta de vendedor.</p>
+      </div>
+
+      <div class="alert alert-error" id="alertBox"></div>
+      <div class="alert alert-success" id="okBox"></div>
+
+      <div class="form-card pay-card">
+        <div class="ref-box">
+          <div class="lbl" id="periodLabel">Referência de pagamento</div>
+          <div class="val" id="refValue">---</div>
+        </div>
+
+        <div style="text-align:center;margin-bottom:8px">
+          <div class="lbl" style="color:var(--muted);font-size:.78rem;letter-spacing:1.5px" id="amountLabel">VALOR DA SUBSCRIÇÃO TRIMESTRAL</div>
+          <div class="amount-xl" id="amountValue">---</div>
+        </div>
+
+        <div class="pay-methods">
+          <div class="pay-method">📱 M-Pesa<div class="num" id="mpesaNum">84 000 0000</div></div>
+          <div class="pay-method">📲 E-Mola<div class="num" id="emolaNum">82 000 0000</div></div>
+        </div>
+
+        <div class="pay-steps">
+          <div class="step"><div class="n">1</div><div class="t"><strong>Efetue o pagamento</strong> por M-Pesa ou E-Mola usando o número indicado.</div></div>
+          <div class="step"><div class="n">2</div><div class="t">Escreva abaixo o <strong>número/ID da transação</strong> que recebeu no SMS.</div></div>
+          <div class="step"><div class="n">3</div><div class="t" id="step3">Submeta. A administração confirma o pagamento e a subscrição fica activa por <strong>um trimestre (3 meses)</strong>.</div></div>
+        </div>
+
+        <div class="field">
+          <label>ID / número da transação M-Pesa ou E-Mola *</label>
+          <input type="text" id="transaction" placeholder="Ex.: TID9548821" />
+        </div>
+
+        <button class="btn btn-green" id="payBtn" style="width:100%">Confirmar pagamento ✔</button>
+        <a href="/" class="btn btn-ghost" style="width:100%;margin-top:8px">Cancelar e voltar</a>
+      </div>
+
+      <div class="form-card" id="statusCard" style="display:none;margin-top:20px">
+        <h3 id="statusTitle" style="margin-bottom:12px">📋 Estado do seu registo</h3>
+        <div id="statusBody"></div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+          <a href="/entrar" class="btn btn-primary btn-sm">Entrar como vendedor</a>
+          <a href="/payment?ref=" onclick="return askRef(event)" class="btn btn-outline btn-sm">Consultar outra referência</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div>© 2026 <strong style="color:#fff">MozCarBusiness</strong></div>
+      <div><a href="/">Voltar à loja</a></div>
+    </div>
+  </footer>
+
+  <script src="/static/js/payment.js"></script>
+</body>
+</html>
